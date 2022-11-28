@@ -5,8 +5,16 @@ type Fetcher interface {
 }
 
 type Processor interface {
-
+	Process(e Event) error
 }
-type Event struct {
 
+type Type int
+
+const (
+	Type = iota
+)
+
+type Event struct {
+	Type Type
+	Text string
 }
