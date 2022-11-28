@@ -7,8 +7,11 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
-	"tg/sitesess.ca/storage"
 	"time"
+
+	"tg/sitesess.ca/lib/e"
+	"tg/sitesess.ca/storage"
+
 )
 
 type Storage struct {
@@ -52,13 +55,15 @@ func (s Storage) Save(page *storage.Page) (err error) {
 	return nil
 }
 
+// PickRandom
 func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	path := filepath.Join(s.basePath, userName)
 
-	files, err := os.ReadDir()
+	files, err := os.ReadDir(path)
 	if err != nil {
 		return nil, fmt.Errorf("ReadDei %w", err)
 	}
+
 
 	if len(files) == 0 {
 		return nil, ErrNoSavePage
@@ -68,40 +73,43 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	n := rand.Intn(len(files))
 
 	file := files[n]
+
 	return s.decodePage(filepath.Join(path, file.Name()))
 }
 
+// Remove
 func (s Storage) Remove(p *storage.Page) error {
 	fileName, err := fileName(p)
 	if err != nil {
 		return fmt.Errorf("fileName Remove %w", err)
 	}
-	
+
 	path := filepath.Join(s.basePath, p.UserName, fileName)
 
-	if err := os.Remove(path): err != nil {
+	if err := os.Remove(path); err != nil {
 		return fmt.Errorf("can't ramove file", err)
 	}
 	return nil
 }
 
-func(s Storage) isExist(p *storage.Page) (bool, error) {
+func (s Storage) isExist(p *storage.Page) (bool, error) {
 	fileName, err := fileName(p)
 	if err != nil {
 		return false, fmt.Errorf("fileName Remove %w", err)
 	}
+
 	path := filepath.Join(s.basePath, p.UserName, fileName)
 
-	switch _,err = os.Stat(path); {
+	//switch
+	switch _, err = os.Stat(path); {
 	case errors.Is(err, os.ErrNotExist):
 		return false, nil
-	case err!= nil:
+	case err != nil:
 		msg := fmt.Sprintf("can't check if file %s exists", path)
-		return false, e.Wrap(msg,err) 
-	
-		return true, nil
+		return false, e.Wrap(msg, err)
 	}
-	
+
+	return true, nil
 }
 
 func (s Storage) decodePage(filePath string) (*storage.Page, error) {

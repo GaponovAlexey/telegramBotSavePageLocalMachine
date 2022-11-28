@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+
 	"tg/sitesess.ca/client/telegram"
 )
 
@@ -29,8 +30,10 @@ func mustToken() string {
 		"token for access to telegram bot",
 	)
 	flag.Parse()
+
 	if *token == "" {
 		log.Fatal(" token is not specified")
 	}
+
 	return *token
 }
