@@ -71,7 +71,36 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	return s.decodePage(filepath.Join(path, file.Name()))
 }
 
-func(s Storage) Remove(p *storage.Page) error {
+func (s Storage) Remove(p *storage.Page) error {
+	fileName, err := fileName(p)
+	if err != nil {
+		return fmt.Errorf("fileName Remove %w", err)
+	}
+	
+	path := filepath.Join(s.basePath, p.UserName, fileName)
+
+	if err := os.Remove(path): err != nil {
+		return fmt.Errorf("can't ramove file", err)
+	}
+	return nil
+}
+
+func(s Storage) isExist(p *storage.Page) (bool, error) {
+	fileName, err := fileName(p)
+	if err != nil {
+		return false, fmt.Errorf("fileName Remove %w", err)
+	}
+	path := filepath.Join(s.basePath, p.UserName, fileName)
+
+	switch _,err = os.Stat(path); {
+	case errors.Is(err, os.ErrNotExist):
+		return false, nil
+	case err!= nil:
+		msg := fmt.Sprintf("can't check if file %s exists", path)
+		return false, e.Wrap(msg,err) 
+	
+		return true, nil
+	}
 	
 }
 
@@ -82,10 +111,10 @@ func (s Storage) decodePage(filePath string) (*storage.Page, error) {
 	}
 	defer func() { _ = f.Close() }()
 	var p storage.Page
-	if err:= gob.NewDecoder(f).Decode(&p); err != nil {
-		return nil, fmt.Errorf("newDecoder decoderPage %w", err )
+	if err := gob.NewDecoder(f).Decode(&p); err != nil {
+		return nil, fmt.Errorf("newDecoder decoderPage %w", err)
 	}
-	return &p, nil	
+	return &p, nil
 }
 
 func fileName(p *storage.Page) (string, error) {

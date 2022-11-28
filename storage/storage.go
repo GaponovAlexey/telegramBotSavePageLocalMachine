@@ -28,5 +28,7 @@ func (p Page) Hash() (string, error) {
 	if _, err := io.WriteString(h, p.UserName); err != nil {
 		return "", fmt.Errorf("writeString %w", err)
 	}
+	
+	
 	return string(h.Sum(nil)), nil
 }
