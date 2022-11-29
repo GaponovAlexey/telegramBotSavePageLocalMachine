@@ -5,6 +5,8 @@ type UpdatesResponce struct {
 	Result []Update `json:"result"`
 }
 
+
+
 type Update struct {
 	ID      int    `json:"update_id"`
 	Message string `json:"message"`
