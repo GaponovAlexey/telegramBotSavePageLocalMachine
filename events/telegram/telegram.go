@@ -22,6 +22,7 @@ func New(client *telegram.Client, storage storage.Storage) *Processor {
 	}
 }
 
+
 func (p *Processor) Fetch(limit int) ([]events.Event, error) {
 	update, err := p.tg.Updates(p.offset, limit)
 	if err != nil {
