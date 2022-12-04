@@ -37,14 +37,15 @@ func newBasePath(token string) string {
 }
 
 // Updates
-func (c *Client) Updates(offset int, limit int) ([]Update, error) {
+func (c *Client) Updates(offset int, limit int) (updates []Update, err error) {
+	defer func(){ err = e.WrapIfErr("can't do Updates", err) } ()
 	q := url.Values{}
 	q.Add("offset", strconv.Itoa(offset))
 	q.Add("limit", strconv.Itoa(limit))
 
 	data, err := c.doRequest(getUpdatesMethod, q)
 	if err != nil {
-		return nil, fmt.Errorf("can't do request %w", err)
+		return nil, err
 	}
 	var res UpdatesResponse
 	if err := json.Unmarshal(data, &res); err != nil {

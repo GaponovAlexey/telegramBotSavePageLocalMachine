@@ -19,6 +19,7 @@ type Page struct {
 }
 
 func (p Page) Hash() (string, error) {
+
 	h := sha1.New()
 
 	if _, err := io.WriteString(h, p.URL); err != nil {
@@ -29,5 +30,5 @@ func (p Page) Hash() (string, error) {
 		return "", fmt.Errorf("writeString %w", err)
 	}
 
-	return string(h.Sum(nil)), nil
+	return fmt.Sprint(h.Sum(nil)), nil
 }

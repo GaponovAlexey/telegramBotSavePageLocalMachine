@@ -1,11 +1,13 @@
 package main
 
 import (
+	"crypto/sha1"
 	"flag"
+	"fmt"
+	"io"
 	"log"
 
-	"tg/sitesess.ca/client/telegram"
-
+	// "tg/sitesess.ca/client/telegram"
 )
 
 const (
@@ -13,10 +15,13 @@ const (
 )
 
 func main() {
-	
-	tgClient := telegram.New(tgBotHost, mustToken())
 
-	fetcher = fetcher.New(tgClient)
+	
+	
+
+	// tgClient := telegram.New(tgBotHost, mustToken())
+
+	// fetcher = fetcher.New(tgClient)
 
 	// processor = processor.New(thClient)
 

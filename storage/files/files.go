@@ -11,7 +11,6 @@ import (
 
 	"tg/sitesess.ca/lib/e"
 	"tg/sitesess.ca/storage"
-
 )
 
 type Storage struct {
@@ -27,24 +26,26 @@ var ErrNoSavePage = errors.New("no saved page")
 func New(basePath string) Storage {
 	return Storage{basePath: basePath}
 }
-
+// SAVE
 func (s Storage) Save(page *storage.Page) (err error) {
+	defer func() { err = e.WrapIfErr("can't save", err) }()
+
 	fPath := filepath.Join(s.basePath, page.UserName)
 
 	if err := os.MkdirAll(fPath, defaultPerm); err != nil {
-		return fmt.Errorf("mkdirall %w", err)
+		return err
 	}
 
 	fName, err := fileName(page)
 	if err != nil {
-		return fmt.Errorf("filename %w", err)
+		return err
 	}
 
 	fPath = filepath.Join(fPath, fName)
 
 	file, err := os.Create(fPath)
 	if err != nil {
-		return fmt.Errorf("os.Create %w", err)
+		return err
 	}
 	defer func() { _ = file.Close() }()
 
@@ -63,7 +64,6 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("ReadDei %w", err)
 	}
-
 
 	if len(files) == 0 {
 		return nil, ErrNoSavePage
