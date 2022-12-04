@@ -9,6 +9,8 @@ import (
 	"path"
 	"strconv"
 
+	"tg/sitesess.ca/lib/e"
+
 )
 
 type Client struct {
@@ -25,7 +27,7 @@ const (
 func New(host string, token string) Client {
 	return Client{
 		host:     host,
-		basePath: "bot" + token,
+		basePath: newBasePath(token),
 		client:   http.Client{},
 	}
 }
@@ -67,18 +69,19 @@ func (c *Client) SendMessage(chatId int, text string) error {
 
 // request
 func (c *Client) doRequest(method string, query url.Values) ([]byte, error) {
+	const errMsg = "can't doRequest"
+
 	u := url.URL{
 		Scheme: "https",
 		Host:   c.host,
 		Path:   path.Join(c.basePath, method),
-	
 	}
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
 
 	if err != nil {
-		return nil, fmt.Errorf("can't do request %w", err)
+		return nil, e.Wrap(errMsg, err)
 	}
-	req.URL.RawQuery = query.Encode()
+	req.URL.RawQuery = query.Encode() // for sending server
 
 	resp, err := c.client.Do(req)
 
