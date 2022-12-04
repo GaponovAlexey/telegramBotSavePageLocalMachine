@@ -26,6 +26,7 @@ var ErrNoSavePage = errors.New("no saved page")
 func New(basePath string) Storage {
 	return Storage{basePath: basePath}
 }
+
 // SAVE
 func (s Storage) Save(page *storage.Page) (err error) {
 	defer func() { err = e.WrapIfErr("can't save", err) }()
@@ -58,11 +59,12 @@ func (s Storage) Save(page *storage.Page) (err error) {
 
 // PickRandom
 func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
+	defer func() { err = e.WrapIfErr("can't save PickRandom", err) }()
 	path := filepath.Join(s.basePath, userName)
 
 	files, err := os.ReadDir(path)
 	if err != nil {
-		return nil, fmt.Errorf("ReadDei %w", err)
+		return nil, err
 	}
 
 	if len(files) == 0 {
@@ -78,24 +80,26 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 }
 
 // Remove
-func (s Storage) Remove(p *storage.Page) error {
+func (s Storage) Remove(p *storage.Page) (err error) {
+	defer func() { err = e.WrapIfErr("can't Remove", err) }()
 	fileName, err := fileName(p)
 	if err != nil {
-		return fmt.Errorf("fileName Remove %w", err)
+		return err
 	}
 
 	path := filepath.Join(s.basePath, p.UserName, fileName)
 
 	if err := os.Remove(path); err != nil {
-		return fmt.Errorf("can't ramove file", err)
+		return err
 	}
 	return nil
 }
 
-func (s Storage) isExist(p *storage.Page) (bool, error) {
+func (s Storage) isExist(p *storage.Page) (b bool, err error) {
+	defer func() { err = e.WrapIfErr("can't isExist", err) }()
 	fileName, err := fileName(p)
 	if err != nil {
-		return false, fmt.Errorf("fileName Remove %w", err)
+		return false, err
 	}
 
 	path := filepath.Join(s.basePath, p.UserName, fileName)
@@ -112,15 +116,16 @@ func (s Storage) isExist(p *storage.Page) (bool, error) {
 	return true, nil
 }
 
-func (s Storage) decodePage(filePath string) (*storage.Page, error) {
+func (s Storage) decodePage(filePath string) (sp *storage.Page, err error) {
+	defer func() { err = e.WrapIfErr("can't decodePage", err) }()
 	f, err := os.Open(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("Open filepath %w", err)
+		return nil, err
 	}
 	defer func() { _ = f.Close() }()
 	var p storage.Page
 	if err := gob.NewDecoder(f).Decode(&p); err != nil {
-		return nil, fmt.Errorf("newDecoder decoderPage %w", err)
+		return nil, err
 	}
 	return &p, nil
 }

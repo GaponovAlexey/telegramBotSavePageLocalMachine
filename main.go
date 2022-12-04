@@ -1,12 +1,8 @@
 package main
 
 import (
-	"crypto/sha1"
 	"flag"
-	"fmt"
-	"io"
 	"log"
-
 	// "tg/sitesess.ca/client/telegram"
 )
 
@@ -15,8 +11,6 @@ const (
 )
 
 func main() {
-
-	
 	
 
 	// tgClient := telegram.New(tgBotHost, mustToken())
