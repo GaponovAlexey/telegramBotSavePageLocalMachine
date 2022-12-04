@@ -23,7 +23,7 @@ const (
 	getUpdatesMethod  = "getUpdates"
 	sendMessageMethod = "sendMessage"
 )
-
+ // NEW
 func New(host string, token string) Client {
 	return Client{
 		host:     host,
@@ -36,6 +36,7 @@ func newBasePath(token string) string {
 	return "bot" + token
 }
 
+// Updates
 func (c *Client) Updates(offset int, limit int) ([]Update, error) {
 	q := url.Values{}
 	q.Add("offset", strconv.Itoa(offset))
@@ -45,7 +46,7 @@ func (c *Client) Updates(offset int, limit int) ([]Update, error) {
 	if err != nil {
 		return nil, fmt.Errorf("can't do request %w", err)
 	}
-	var res UpdatesResponce
+	var res UpdatesResponse
 	if err := json.Unmarshal(data, &res); err != nil {
 		return nil, fmt.Errorf("can't do request Unmarshal %w", err)
 	}
@@ -62,14 +63,14 @@ func (c *Client) SendMessage(chatId int, text string) error {
 	_, err := c.doRequest(sendMessageMethod, q)
 
 	if err != nil {
-		return fmt.Errorf("can't do doRequest %w", err)
+		return fmt.Errorf("can't do SendMessage %w", err)
 	}
 	return nil
 }
 
 // request
-func (c *Client) doRequest(method string, query url.Values) ([]byte, error) {
-	const errMsg = "can't doRequest"
+func (c *Client) doRequest(method string, query url.Values) (data []byte, err error) {
+	defer func() { err = e.WrapIfErr("can't doRequest", err) }()
 
 	u := url.URL{
 		Scheme: "https",
@@ -79,20 +80,20 @@ func (c *Client) doRequest(method string, query url.Values) ([]byte, error) {
 	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
 
 	if err != nil {
-		return nil, e.Wrap(errMsg, err)
+		return nil, err
 	}
 	req.URL.RawQuery = query.Encode() // for sending server
 
 	resp, err := c.client.Do(req)
 
 	if err != nil {
-		return nil, fmt.Errorf("can't do request %w", err)
+		return nil, err
 	}
 	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		return nil, fmt.Errorf("can't do request %w", err)
+		return nil, err
 	}
 	return body, nil
 }
