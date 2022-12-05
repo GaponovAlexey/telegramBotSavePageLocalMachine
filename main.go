@@ -5,6 +5,7 @@ import (
 	"log"
 
 	tgClient "tg/sitesess.ca/client/telegram"
+	"tg/sitesess.ca/consumer/e-consumers"
 	"tg/sitesess.ca/events/telegram"
 	"tg/sitesess.ca/storage/files"
 
@@ -19,7 +20,9 @@ func main() {
 
 	eventsProcesor := telegram.New(tgClient.New(tgBotHost, mustToken()), files.New(storagePath))
 
-	// fetcher = fetcher.New(tgClient)
+	log.Println("start")
+
+	consumer := e_consumers.New()
 
 	// processor = processor.New(thClient)
 
