@@ -48,26 +48,30 @@ func (p *Processor) Fetch(limit int) ([]events.Event, error) {
 func (p *Processor) Process(event events.Event) error {
 	switch event.Type {
 	case events.Message:
-		p.processMessage(event)
+		return p.processMessage(event)
 	default:
 		return e.Wrap("can't process message", errors.New("unknown event"))
 	}
 }
-func (p *Processor) processMessage(event events.Event) error {
-	meta, err:= meta(event)
-	if err!= nil {
-		return e.Wrap("can't process message", err)
-	}
-	
-}
 
 func meta(event events.Event) (Meta, error) {
-	res, ok:= event.Meta.(Meta)
+	res, ok := event.Meta.(Meta)
 	if !ok {
 		return Meta{}, e.Wrap("can't get Meta", errors.New("unknown meta type"))
 	}
 	return res, nil
 }
+func (p *Processor) processMessage(event events.Event) error {
+	meta, err := meta(event)
+	if err != nil {
+		return e.Wrap("can't process message", err)
+	}
+	if err := p.doCmd(event.Text, meta.ChatID, meta.Username); err != nil {
+		return e.Wrap("can't process message", err)
+	}
+	return nil
+}
+
 func event(upd telegram.Update) events.Event {
 	updType := fetchType(upd)
 	res := events.Event{
