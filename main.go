@@ -4,19 +4,20 @@ import (
 	"flag"
 	"log"
 
-	// "tg/sitesess.ca/client/telegram"
+	tgClient "tg/sitesess.ca/client/telegram"
+	"tg/sitesess.ca/events/telegram"
+	"tg/sitesess.ca/storage/files"
 
 )
 
 const (
-	tgBotHost = "api.telegram.org"
+	tgBotHost   = "api.telegram.org"
+	storagePath = "storage"
 )
 
 func main() {
 
-		
-
-	// tgClient := telegram.New(tgBotHost, mustToken())
+	eventsProcesor := telegram.New(tgClient.New(tgBotHost, mustToken()), files.New(storagePath))
 
 	// fetcher = fetcher.New(tgClient)
 
