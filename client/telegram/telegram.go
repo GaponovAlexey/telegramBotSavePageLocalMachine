@@ -19,11 +19,7 @@ type Client struct {
 	client   http.Client
 }
 
-const (
-	getUpdatesMethod  = "getUpdates"
-	sendMessageMethod = "sendMessage"
-)
- // NEW
+// NEW
 func New(host string, token string) *Client {
 	return &Client{
 		host:     host,
@@ -35,6 +31,11 @@ func New(host string, token string) *Client {
 func newBasePath(token string) string {
 	return "bot" + token
 }
+
+const (
+	getUpdatesMethod  = "getUpdates"
+	sendMessageMethod = "sendMessage"
+)
 
 // Updates
 func (c *Client) Updates(offset int, limit int) (updates []Update, err error) {
