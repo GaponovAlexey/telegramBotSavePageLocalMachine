@@ -40,6 +40,8 @@ func (c Consumer) Start() error {
 	}
 }
 
+
+
 func (c *Consumer) handleEvents(events []events.Event) error {
 
 	for _, event := range events {
