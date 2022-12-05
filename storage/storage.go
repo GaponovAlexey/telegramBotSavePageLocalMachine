@@ -6,16 +6,19 @@ import (
 	"fmt"
 	"io"
 
+	"tg/sitesess.ca/lib/e"
+
 )
 
+
 type Storage interface {
-	Save(*Page) error
+	Save(p *Page) error
 	PickRandom(userName string) (*Page, error)
 	Remove(p *Page) error
 	IsExists(p *Page) (bool, error)
 }
 
-var ErrNoSavedPage = errors.New("no saved pages")
+var ErrNoSavedPages = errors.New("no saved pages")
 
 type Page struct {
 	URL      string
@@ -23,16 +26,15 @@ type Page struct {
 }
 
 func (p Page) Hash() (string, error) {
-
 	h := sha1.New()
 
 	if _, err := io.WriteString(h, p.URL); err != nil {
-		return "", fmt.Errorf("writeString %w", err)
+		return "", e.Wrap("can't calculate hash", err)
 	}
 
 	if _, err := io.WriteString(h, p.UserName); err != nil {
-		return "", fmt.Errorf("writeString %w", err)
+		return "", e.Wrap("can't calculate hash", err)
 	}
 
-	return fmt.Sprint(h.Sum(nil)), nil
+	return fmt.Sprintf("%x", h.Sum(nil)), nil
 }

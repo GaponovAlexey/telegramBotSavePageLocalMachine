@@ -54,10 +54,13 @@ func (s Storage) Save(page *storage.Page) (err error) {
 	return nil
 }
 
-// PickRandom
 func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
-	defer func() { err = e.WrapIfErr("can't save PickRandom", err) }()
+	defer func() { err = e.WrapIfErr("can't pick random page", err) }()
+
 	path := filepath.Join(s.basePath, userName)
+
+	// 1. check user folder
+	// 2. create folder
 
 	files, err := os.ReadDir(path)
 	if err != nil {
@@ -65,9 +68,9 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	}
 
 	if len(files) == 0 {
-		return nil, storage.ErrNoSavedPage
+		return nil, storage.ErrNoSavedPages
 	}
-	// 0
+
 	rand.Seed(time.Now().UnixNano())
 	n := rand.Intn(len(files))
 
@@ -76,23 +79,25 @@ func (s Storage) PickRandom(userName string) (page *storage.Page, err error) {
 	return s.decodePage(filepath.Join(path, file.Name()))
 }
 
-// Remove
-func (s Storage) Remove(p *storage.Page) (err error) {
-	defer func() { err = e.WrapIfErr("can't Remove", err) }()
+func (s Storage) Remove(p *storage.Page) error {
 	fileName, err := fileName(p)
 	if err != nil {
-		return err
+		return e.Wrap("can't remove file", err)
 	}
 
 	path := filepath.Join(s.basePath, p.UserName, fileName)
 
 	if err := os.Remove(path); err != nil {
-		return err
+		msg := fmt.Sprintf("can't remove file %s", path)
+
+		return e.Wrap(msg, err)
 	}
+
 	return nil
 }
 
-func (s Storage) isExist(p *storage.Page) (b bool, err error) {
+
+func (s Storage) IsExists(p *storage.Page) (b bool, err error) {
 	defer func() { err = e.WrapIfErr("can't isExist", err) }()
 	fileName, err := fileName(p)
 	if err != nil {
@@ -113,17 +118,19 @@ func (s Storage) isExist(p *storage.Page) (b bool, err error) {
 	return true, nil
 }
 
-func (s Storage) decodePage(filePath string) (sp *storage.Page, err error) {
-	defer func() { err = e.WrapIfErr("can't decodePage", err) }()
+func (s Storage) decodePage(filePath string) (*storage.Page, error) {
 	f, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		return nil, e.Wrap("can't decode page", err)
 	}
 	defer func() { _ = f.Close() }()
+
 	var p storage.Page
+
 	if err := gob.NewDecoder(f).Decode(&p); err != nil {
-		return nil, err
+		return nil, e.Wrap("can't decode page", err)
 	}
+
 	return &p, nil
 }
 
