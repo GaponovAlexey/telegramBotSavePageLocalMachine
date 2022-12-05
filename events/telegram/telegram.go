@@ -15,10 +15,16 @@ type Processor struct {
 	offset  int
 	storage storage.Storage
 }
+
 type Meta struct {
 	ChatID   int
 	Username string
 }
+
+var (
+	ErrUnknownEventType = errors.New("unknown event type")
+	ErrUnknownMetaType  = errors.New("unknown meta type")
+)
 
 func New(client *telegram.Client, storage storage.Storage) *Processor {
 	return &Processor{
