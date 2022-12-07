@@ -8,9 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
-
-	"tg/sitesess.ca/lib/e"
-	"tg/sitesess.ca/storage"
+	"tg/sitesess-ca/storage"
+	"tg/sitesess-ca/lib/e"
 
 )
 

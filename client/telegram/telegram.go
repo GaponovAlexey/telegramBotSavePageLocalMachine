@@ -8,8 +8,7 @@ import (
 	"net/url"
 	"path"
 	"strconv"
-
-	"tg/sitesess.ca/lib/e"
+	"tg/sitesess-ca/lib/e"
 
 )
 

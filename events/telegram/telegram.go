@@ -2,11 +2,10 @@ package telegram
 
 import (
 	"errors"
-
-	"tg/sitesess.ca/client/telegram"
-	"tg/sitesess.ca/events"
-	"tg/sitesess.ca/lib/e"
-	"tg/sitesess.ca/storage"
+	"tg/sitesess-ca/client/telegram"
+	"tg/sitesess-ca/events"
+	"tg/sitesess-ca/lib/e"
+	"tg/sitesess-ca/storage"
 
 )
 
