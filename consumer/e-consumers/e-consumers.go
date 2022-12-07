@@ -3,8 +3,7 @@ package e_consumers
 import (
 	"log"
 	"time"
-
-	"tg/sitesess.ca/events"
+	"tg/sitesess-ca/events"
 
 )
 

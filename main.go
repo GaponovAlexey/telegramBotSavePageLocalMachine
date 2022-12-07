@@ -3,11 +3,10 @@ package main
 import (
 	"flag"
 	"log"
-
-	tgClient "tg/sitesess.ca/client/telegram"
-	"tg/sitesess.ca/consumer/e-consumers"
-	"tg/sitesess.ca/events/telegram"
-	"tg/sitesess.ca/storage/files"
+	"tg/sitesess-ca/consumer/e-consumers"
+	"tg/sitesess-ca/events/telegram"
+	"tg/sitesess-ca/storage/files"
+	tgClient "tg/sitesess-ca/client/telegram"
 
 )
 

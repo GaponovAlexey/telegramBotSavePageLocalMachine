@@ -1,3 +1,3 @@
-module tg/sitesess.ca
+module tg/sitesess-ca
 
 go 1.19

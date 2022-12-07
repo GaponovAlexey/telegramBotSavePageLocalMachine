@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-
-	"tg/sitesess.ca/lib/e"
+	"tg/sitesess-ca/lib/e"
 
 )
 
