@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"log"
+	tgClient "tg/sitesess-ca/client/telegram"
 	"tg/sitesess-ca/consumer/e-consumers"
 	"tg/sitesess-ca/events/telegram"
 	"tg/sitesess-ca/storage/files"
-	tgClient "tg/sitesess-ca/client/telegram"
 
 )
 
@@ -19,8 +19,11 @@ const (
 func main() {
 
 	eventsProcessor := telegram.New(
-		tgClient.New(tgBotHost, mustToken()),
-		files.New(storagePath),
+		tgClient.New(
+			tgBotHost, //host "api.telegram.org"
+			mustToken(), // token tg-bot-token
+		),
+		files.New(storagePath), // files-storage папка для сохранения
 	)
 
 	log.Println("start")
@@ -36,7 +39,7 @@ func main() {
 func mustToken() string {
 	token := flag.String(
 		"tg-bot-token",
-		"", // перед компиляцией нужно закинуть токен 
+		"", // перед компиляцией нужно закинуть токен
 		"token for access to telegram bot",
 	)
 	flag.Parse()
