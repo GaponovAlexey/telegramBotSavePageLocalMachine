@@ -35,7 +35,7 @@ func main() {
 	}
 
 }
-
+//token
 func mustToken() string {
 	token := flag.String(
 		"tg-bot-token",
